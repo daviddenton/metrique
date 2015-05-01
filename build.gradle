@@ -1,0 +1,89 @@
+plugins {
+    id "com.jfrog.bintray" version "1.1"
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+apply plugin: 'java'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'maven-publish'
+
+archivesBaseName = 'metrique'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_7
+
+version = releaseVersion
+group = 'io.github.daviddenton'
+
+description = ''
+
+dependencies {
+    testCompile 'org.hamcrest:hamcrest-all:1.3'
+    testCompile 'junit:junit:4.12'
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'metrique'
+
+            pom.withXml {
+                asNode().appendNode('name', 'metrique')
+                asNode().appendNode('description', description)
+                asNode().appendNode('url', 'http://metrique.github.io')
+                asNode().appendNode('developers').appendNode('developer').
+                        appendNode('name', 'David Denton').parent().
+                        appendNode('email', 'mail@daviddenton.github.io')
+                asNode().appendNode('scm').
+                        appendNode('url', 'git@github.com:daviddenton/metrique.git').parent().
+                        appendNode('connection', 'scm:git:git@github.com:daviddenton/metrique.git').parent().
+                        appendNode('developerConnection', 'scm:git:git@github.com:daviddenton/metrique.git')
+                asNode().appendNode('licenses').appendNode('license').
+                        appendNode('name', 'Apache License, Version 2.0').parent().
+                        appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0.html')
+            }
+            from components.java
+
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
+
+bintray {
+    user = 'daviddenton'
+    key = project.bintrayKey
+
+    publications = ['mavenJava']
+    dryRun = false
+    publish = true
+    pkg {
+        repo = 'maven'
+        name = 'metrique'
+
+        desc = description
+        websiteUrl = 'https://github.com/daviddenton/metrique'
+        issueTrackerUrl = 'https://github.com/daviddenton/metrique/issues'
+        vcsUrl = 'https://github.com/daviddenton/metrique.git'
+        licenses = ['Apache-2.0']
+        labels = []
+        publicDownloadNumbers = true
+        version {
+            name = project.version
+        }
+    }
+}
