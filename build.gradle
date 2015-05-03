@@ -19,7 +19,7 @@ targetCompatibility = JavaVersion.VERSION_1_7
 version = releaseVersion
 group = 'io.github.daviddenton'
 
-description = ''
+description = 'Hierarchical metrics sent to StatsD.'
 
 dependencies {
     compile 'com.google.guava:guava:18.0'
