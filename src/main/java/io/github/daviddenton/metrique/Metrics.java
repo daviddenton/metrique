@@ -1,25 +1,21 @@
-package io.github.daviddenton.metrique.metrics;
-
-import java.util.List;
+package io.github.daviddenton.metrique;
 
 public class Metrics {
 
-    private final List<String> rootName;
     private final MetricsClient client;
     public final MetricName name;
 
-    protected Metrics(MetricsClient client, List<String> rootName) {
-        this.rootName = rootName;
+    public Metrics(MetricsClient client, MetricName rootName) {
         this.client = client;
-        this.name = new MetricName(rootName);
+        this.name = rootName;
     }
 
     public Metrics child(String... newParts) {
-        return new Metrics(client, name.getCollect(newParts, rootName));
+        return new Metrics(client, name.child(newParts));
     }
 
     public Metric metric(String... newParts) {
-        MetricName finalName = child(newParts).name;
+        final MetricName finalName = child(newParts).name;
 
         return new Metric() {
             public void count(Long value) {

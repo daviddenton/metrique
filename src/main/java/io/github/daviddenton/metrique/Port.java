@@ -1,4 +1,4 @@
-package io.github.daviddenton.metrique.metrics;
+package io.github.daviddenton.metrique;
 
 public class Port {
 
