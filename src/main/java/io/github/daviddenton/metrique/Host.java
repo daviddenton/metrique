@@ -19,4 +19,21 @@ public class Host {
     public static Host host(String name) {
         return new Host(name);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Host host = (Host) o;
+
+        if (!name.equals(host.name)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }
