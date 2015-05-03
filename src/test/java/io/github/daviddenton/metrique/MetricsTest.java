@@ -20,7 +20,12 @@ public class MetricsTest {
 
     @Test
     public void canCreateNamedChildMetrics() throws Exception {
-        assertEquals(rootMetrics.child("bob").name, new MetricName("bob"));
+        assertEquals(new MetricName("bob"), rootMetrics.child("bob").name);
+    }
+
+    @Test
+    public void canCreateChildMetricsForObject() throws Exception {
+        assertEquals(new MetricName(this.getClass().getName()), rootMetrics.childFor(this).name);
     }
 
     @Test

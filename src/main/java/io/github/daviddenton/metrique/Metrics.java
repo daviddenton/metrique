@@ -10,6 +10,10 @@ public class Metrics {
         this.name = rootName;
     }
 
+    public Metrics childFor(Object o) {
+        return child(o.getClass().getName().split("\\."));
+    }
+
     public Metrics child(String... newParts) {
         return new Metrics(client, name.child(newParts));
     }
