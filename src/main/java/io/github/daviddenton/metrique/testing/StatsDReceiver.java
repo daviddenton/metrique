@@ -1,7 +1,7 @@
 package io.github.daviddenton.metrique.testing;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public interface StatsDReceiver {
 
@@ -15,7 +15,7 @@ public interface StatsDReceiver {
     };
 
     class Recording implements StatsDReceiver {
-        public final List<String> receivedMessages = new ArrayList<>();
+        public final List<String> receivedMessages = new CopyOnWriteArrayList<>();
 
         @Override
         public void receive(String message) {
