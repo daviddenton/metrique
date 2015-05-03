@@ -89,7 +89,7 @@ publishing {
 
 bintray {
     user = 'daviddenton'
-    key = project.bintrayKey
+    key = project.hasProperty('bintrayKey') ? project.bintrayKey : 'BINTRAYKEY'
 
     publications = ['mavenJava']
     dryRun = false
