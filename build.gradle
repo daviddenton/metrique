@@ -30,6 +30,7 @@ apply plugin: 'maven-publish'
 
 cobertura.coverageFormats = ['html', 'xml']
 
+
 archivesBaseName = 'metrique'
 
 sourceCompatibility = JavaVersion.VERSION_1_7
