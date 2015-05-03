@@ -24,31 +24,31 @@ public class MetricsTest {
     }
 
     @Test
-    public void countsAreAsExpected() throws Exception {
+    public void countsRecordsAsExpected() throws Exception {
         rootMetrics.child("bob").metric("rita").count(1L);
         verify(client).count(new MetricName("bob", "rita"), 1L);
     }
 
     @Test
-    public void incrementAreAsExpected() throws Exception {
+    public void incrementRecordsAsExpected() throws Exception {
         rootMetrics.child("bob").metric("rita").increment();
         verify(client).increment(new MetricName("bob", "rita"));
     }
 
     @Test
-    public void deccrementAreAsExpected() throws Exception {
+    public void decrementRecordsAsExpected() throws Exception {
         rootMetrics.child("bob").metric("rita").decrement();
         verify(client).decrement(new MetricName("bob", "rita"));
     }
 
     @Test
-    public void timersAreAsExpected() throws Exception {
+    public void timersRecordsAsExpected() throws Exception {
         rootMetrics.child("bob").metric("rita").time(1L);
         verify(client).time(new MetricName("bob", "rita"), 1L);
     }
 
     @Test
-    public void gaugesAreAsExpected() throws Exception {
+    public void gaugesRecordsAsExpected() throws Exception {
         rootMetrics.child("bob").metric("rita").gauge(1L);
         verify(client).gauge(new MetricName("bob", "rita"), 1L);
     }
