@@ -9,9 +9,8 @@ import org.junit.Test;
 import static io.github.daviddenton.metrique.DropWizardMetrics.dropWizardMetrics;
 import static io.github.daviddenton.metrique.Host.localhost;
 import static io.github.daviddenton.metrique.Port.port;
+import static io.github.daviddenton.metrique.testing.StatsDReceiver.Recording.containsAMessageWhichIncludes;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.startsWith;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
 
 public class DropWizardMetricsTest {
     private static final Port PORT = port(9999);
@@ -23,35 +22,35 @@ public class DropWizardMetricsTest {
     public void sendsCountStatsToServer() throws Exception {
         metrics.metric("bob").count(10L);
         Thread.sleep(20);
-        assertThat(statReceiver.receivedMessages.toString(), statReceiver.receivedMessages, hasItem(startsWith("prefix.bob.samples:10|g")));
+        assertThat(statReceiver.receivedMessages, containsAMessageWhichIncludes("prefix.bob.samples:10|g"));
     }
 
     @Test
     public void sendsIncrementStatsToServer() throws Exception {
         metrics.metric("bob").increment();
         Thread.sleep(20);
-        assertThat(statReceiver.receivedMessages.toString(), statReceiver.receivedMessages, hasItem(startsWith("prefix.bob:1|g")));
+        assertThat(statReceiver.receivedMessages, containsAMessageWhichIncludes("prefix.bob:1|g"));
     }
 
     @Test
     public void sendsDecrementStatsToServer() throws Exception {
         metrics.metric("bob").decrement();
         Thread.sleep(20);
-        assertThat(statReceiver.receivedMessages.toString(), statReceiver.receivedMessages, hasItem(startsWith("prefix.bob:-1|g")));
+        assertThat(statReceiver.receivedMessages, containsAMessageWhichIncludes("prefix.bob:-1|g"));
     }
 
     @Test
     public void sendsGaugeStatsToServer() throws Exception {
         metrics.metric("bob").gauge(1L);
         Thread.sleep(20);
-        assertThat(statReceiver.receivedMessages.toString(), statReceiver.receivedMessages, hasItem(startsWith("prefix.bob.samples:1|g")));
+        assertThat(statReceiver.receivedMessages, containsAMessageWhichIncludes("prefix.bob.samples:1|g"));
     }
 
     @Test
     public void sendsTimerStatsToServer() throws Exception {
         metrics.metric("bob").time(1L);
         Thread.sleep(20);
-        assertThat(statReceiver.receivedMessages.toString(), statReceiver.receivedMessages, hasItem(startsWith("prefix.bob.max:1.00|g")));
+        assertThat(statReceiver.receivedMessages, containsAMessageWhichIncludes("prefix.bob.max:1.00|g"));
     }
 
     @Before
