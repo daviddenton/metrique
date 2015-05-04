@@ -13,11 +13,14 @@ public class MetricName {
 
     public final String value;
 
-    public MetricName(String... parts) {
+    private MetricName(String... parts) {
         this(asList(parts));
     }
 
-    public MetricName(Iterable<String> parts) {
+    public static MetricName metricName(String... parts) {
+        return new MetricName(asList(parts));
+    }
+    private MetricName(Iterable<String> parts) {
         this.parts = parts;
         value = Joiner.on(".").join(parts);
     }

@@ -2,32 +2,33 @@ package io.github.daviddenton.metrique;
 
 import org.junit.Test;
 
+import static io.github.daviddenton.metrique.MetricName.metricName;
 import static org.junit.Assert.assertEquals;
 
 public class MetricNameTest {
 
     @Test
     public void toStringIsJustName() throws Exception {
-        assertEquals(new MetricName("bob").toString(), "bob");
+        assertEquals(metricName("bob").toString(), "bob");
     }
 
     @Test
     public void hashcodeIsEqual() throws Exception {
-        assertEquals(new MetricName("bob").hashCode(), new MetricName("bob").hashCode());
+        assertEquals(metricName("bob").hashCode(), metricName("bob").hashCode());
     }
 
     @Test
     public void equalIsEqual() throws Exception {
-        assertEquals(new MetricName("bob"), new MetricName("bob"));
+        assertEquals(metricName("bob"), metricName("bob"));
     }
 
     @Test
     public void rootNameIsEmpty() throws Exception {
-        assertEquals(new MetricName().value, "");
+        assertEquals(metricName().value, "");
     }
 
     @Test
     public void itConcatsChildNames() throws Exception {
-        assertEquals(new MetricName("bob").child("rita", "sue").value, "bob.rita.sue");
+        assertEquals(metricName("bob").child("rita", "sue").value, "bob.rita.sue");
     }
 }

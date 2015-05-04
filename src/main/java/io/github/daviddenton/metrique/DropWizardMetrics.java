@@ -6,6 +6,7 @@ import com.codahale.metrics.ScheduledReporter;
 import java.util.concurrent.TimeUnit;
 
 import static com.readytalk.metrics.StatsDReporter.forRegistry;
+import static io.github.daviddenton.metrique.MetricName.metricName;
 
 public class DropWizardMetrics extends Metrics {
 
@@ -29,7 +30,7 @@ public class DropWizardMetrics extends Metrics {
     public static DropWizardMetrics dropWizardMetrics(Host host, Port port, String prefix, long reportingInterval) {
         MetricRegistry registry = new MetricRegistry();
         ScheduledReporter reporter = forRegistry(registry).prefixedWith(prefix).build(host.name, port.value);
-        return new DropWizardMetrics(reporter, new DropWizardMetricsClient(registry), new MetricName(), reportingInterval);
+        return new DropWizardMetrics(reporter, new DropWizardMetricsClient(registry), metricName(), reportingInterval);
     }
 
     private static class DropWizardMetricsClient implements MetricsClient {

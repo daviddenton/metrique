@@ -14,6 +14,12 @@ public interface StatsDReceiver {
         }
     };
 
+    StatsDReceiver NoOp = new StatsDReceiver() {
+        @Override
+        public void receive(String message) {
+        }
+    };
+
     class Recording implements StatsDReceiver {
         public final List<String> receivedMessages = new CopyOnWriteArrayList<>();
 
@@ -40,11 +46,5 @@ public interface StatsDReceiver {
 //                }
 //            };
 //        }
-    }
-
-    class NoOp implements StatsDReceiver {
-        @Override
-        public void receive(String message) {
-        }
     }
 }
