@@ -30,6 +30,11 @@ public class MetricsTest {
     }
 
     @Test
+    public void canCreateChildMetricsFoClass() throws Exception {
+        assertEquals(metricName(this.getClass().getName()), rootMetrics.childFor(this.getClass()).name);
+    }
+
+    @Test
     public void countsRecordsAsExpected() throws Exception {
         rootMetrics.child("bob").metric("rita").count(1L);
         verify(client).count(metricName("bob", "rita"), 1L);

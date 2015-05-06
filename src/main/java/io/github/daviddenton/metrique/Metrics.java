@@ -11,7 +11,11 @@ public class Metrics<T extends MetricsClient> {
     }
 
     public Metrics childFor(Object o) {
-        return child(o.getClass().getName().split("\\."));
+        return childFor(o.getClass());
+    }
+
+    public Metrics childFor(Class<?> clazz) {
+        return child(clazz.getName().split("\\."));
     }
 
     public Metrics child(String... newParts) {
