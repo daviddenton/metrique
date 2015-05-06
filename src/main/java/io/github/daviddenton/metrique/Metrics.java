@@ -1,11 +1,11 @@
 package io.github.daviddenton.metrique;
 
-public class Metrics<T extends MetricsClient> {
+public class Metrics {
 
-    protected final T client;
+    protected final MetricsClient client;
     public final MetricName name;
 
-    public Metrics(T client, MetricName rootName) {
+    public Metrics(MetricsClient client, MetricName rootName) {
         this.client = client;
         this.name = rootName;
     }
@@ -19,7 +19,7 @@ public class Metrics<T extends MetricsClient> {
     }
 
     public Metrics child(String... newParts) {
-        return new Metrics<>(client, name.child(newParts));
+        return new Metrics(client, name.child(newParts));
     }
 
     public Metric metric(String... newParts) {

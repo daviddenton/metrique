@@ -12,7 +12,7 @@ public class MetricsTest {
 
     private final MetricsClient client = mock(MetricsClient.class);
 
-    private final Metrics rootMetrics = new Metrics<>(client, MetricName.ROOT);
+    private final Metrics rootMetrics = new Metrics(client, MetricName.ROOT);
 
     @Test
     public void rootNameIsEmpty() throws Exception {

@@ -7,7 +7,7 @@ import io.github.daviddenton.metrique.MetricsClient;
 import java.util.*;
 
 public interface TestingMetrics {
-    static Metrics PrintingMetrics = new Metrics<>(new MetricsClient() {
+    static Metrics PrintingMetrics = new Metrics(new MetricsClient() {
         @Override
         public void decrement(MetricName name) {
             System.out.println("Metrics: decrement: " + name);
@@ -73,19 +73,19 @@ public interface TestingMetrics {
         }
     }
 
-    static class RecordingMetrics extends Metrics<RecallableMetricsClient> {
+    static class RecordingMetrics extends Metrics {
         public long counter(MetricName name) {
-            Long val = client.counters.get(name);
+            Long val = ((RecallableMetricsClient)client).counters.get(name);
             return val == null ? 0 : val;
         }
 
         public List<Long> gauge(MetricName name) {
-            List<Long> val = client.gauges.get(name);
+            List<Long> val = ((RecallableMetricsClient)client).gauges.get(name);
             return val == null ? Collections.<Long>emptyList() : val;
         }
 
         public List<Long> timer(MetricName name) {
-            List<Long> val = client.timers.get(name);
+            List<Long> val = ((RecallableMetricsClient)client).timers.get(name);
             return val == null ? Collections.<Long>emptyList() : val;
         }
 

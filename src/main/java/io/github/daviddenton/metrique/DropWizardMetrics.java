@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 import static com.readytalk.metrics.StatsDReporter.forRegistry;
 import static io.github.daviddenton.metrique.MetricName.metricName;
 
-public class DropWizardMetrics extends Metrics<MetricsClient> {
+public class DropWizardMetrics extends Metrics {
 
     private final ScheduledReporter reporter;
     private final long intervalInMillis;
