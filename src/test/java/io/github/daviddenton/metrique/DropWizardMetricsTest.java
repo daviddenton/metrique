@@ -1,16 +1,21 @@
 package io.github.daviddenton.metrique;
 
+import com.google.common.base.Predicate;
 import io.github.daviddenton.metrique.testing.FakeStatsDServer;
 import io.github.daviddenton.metrique.testing.StatsDReceiver;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
+import static com.google.common.collect.Iterables.any;
 import static io.github.daviddenton.metrique.DropWizardMetrics.dropWizardMetrics;
 import static io.github.daviddenton.metrique.Host.localhost;
 import static io.github.daviddenton.metrique.Port.port;
-import static io.github.daviddenton.metrique.testing.StatsDReceiver.Recording.containsAMessageWhichIncludes;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThat;
 
 public class DropWizardMetricsTest {
     private static final Port PORT = port(9999);
@@ -63,5 +68,25 @@ public class DropWizardMetricsTest {
     public void teardown() throws Exception {
         metrics.stop();
         statsD.stop();
+    }
+
+    public static Matcher<List<String>> containsAMessageWhichIncludes(final String message) {
+        return new TypeSafeMatcher<List<String>>() {
+
+            @Override
+            public void describeTo(org.hamcrest.Description description) {
+                description.appendText("containing a partial message of " + message);
+            }
+
+            @Override
+            protected boolean matchesSafely(List<String> allMessages) {
+                return any(allMessages, new Predicate<String>() {
+                    @Override
+                    public boolean apply(String input) {
+                        return input.contains(message);
+                    }
+                });
+            }
+        };
     }
 }

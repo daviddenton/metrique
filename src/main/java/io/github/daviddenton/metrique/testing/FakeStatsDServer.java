@@ -8,7 +8,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.concurrent.CountDownLatch;
 
-import static io.github.daviddenton.metrique.Port.*;
+import static io.github.daviddenton.metrique.Port.port;
 import static java.util.Arrays.copyOfRange;
 
 public class FakeStatsDServer {
