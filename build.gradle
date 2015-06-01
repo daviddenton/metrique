@@ -34,8 +34,8 @@ cobertura.coverageFormats = ['html', 'xml']
 
 archivesBaseName = 'metrique'
 
-sourceCompatibility = JavaVersion.VERSION_1_7
-targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 version = project.hasProperty('releaseVersion') ? project.releaseVersion : 'LOCAL'
 group = 'io.github.daviddenton'

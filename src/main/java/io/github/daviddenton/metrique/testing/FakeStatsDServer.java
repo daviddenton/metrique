@@ -7,16 +7,17 @@ import io.github.daviddenton.metrique.Port;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.concurrent.CountDownLatch;
+import java.util.function.Consumer;
 
 import static io.github.daviddenton.metrique.Port.port;
 import static java.util.Arrays.copyOfRange;
 
 public class FakeStatsDServer {
     private final Port port;
-    private final StatsDReceiver messageReceiver;
+    private final Consumer<String> messageReceiver;
     private DatagramReceiving datagramReceiving;
 
-    public FakeStatsDServer(Port greyLogPort, StatsDReceiver statReceiver) {
+    public FakeStatsDServer(Port greyLogPort, Consumer<String> statReceiver) {
         this.port = greyLogPort;
         this.messageReceiver = statReceiver;
     }
@@ -40,9 +41,9 @@ public class FakeStatsDServer {
         private final Port port;
 
         private final CountDownLatch stopLatch = new CountDownLatch(1);
-        private final StatsDReceiver messageReceiver;
+        private final Consumer<String> messageReceiver;
 
-        private DatagramReceiving(Port port, StatsDReceiver messageReceiver) {
+        private DatagramReceiving(Port port, Consumer<String> messageReceiver) {
             this.port = port;
             this.messageReceiver = messageReceiver;
         }
@@ -59,7 +60,7 @@ public class FakeStatsDServer {
                     if (STOP_MESSAGE.equals(new String(copyOfRange(inBuffer, 0, STOP_MESSAGE.getBytes().length)))) {
                         running = false;
                     } else {
-                        messageReceiver.receive(new String(inBuffer));
+                        messageReceiver.accept(new String(inBuffer));
                     }
                 }
                 socket.close();
