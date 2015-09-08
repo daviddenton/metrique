@@ -28,7 +28,10 @@ public class DropWizardMetrics extends Metrics {
     }
 
     public static DropWizardMetrics dropWizardMetrics(Host host, Port port, String prefix, long reportingInterval) {
-        MetricRegistry registry = new MetricRegistry();
+        return dropWizardMetrics(host, port, prefix, reportingInterval, new MetricRegistry());
+    }
+
+    public static DropWizardMetrics dropWizardMetrics(Host host, Port port, String prefix, long reportingInterval, MetricRegistry registry) {
         ScheduledReporter reporter = forRegistry(registry).prefixedWith(prefix).build(host.name, port.value);
         return new DropWizardMetrics(reporter, new DropWizardMetricsClient(registry), metricName(), reportingInterval);
     }
