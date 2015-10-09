@@ -28,18 +28,22 @@ public class Metrics {
         final MetricName finalName = child(newParts).name;
 
         return new Metric() {
+            @Override
             public void count(Long value) {
                 client.count(finalName, value);
             }
 
+            @Override
             public void increment() {
                 client.increment(finalName);
             }
 
+            @Override
             public void decrement() {
                 client.decrement(finalName);
             }
 
+            @Override
             public void histogram(Long value) {
                 client.histogram(finalName, value);
             }
@@ -49,8 +53,14 @@ public class Metrics {
                 client.gauge(finalName, value);
             }
 
+            @Override
             public void time(Long value) {
                 client.time(finalName, value);
+            }
+
+            @Override
+            public void meter() {
+                client.meter(finalName);
             }
         };
     }

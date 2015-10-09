@@ -31,10 +31,19 @@ public class DropWizardMetricsTest {
     }
 
     @Test
+    public void sendsMeterStatsToServer() throws Exception {
+        metrics.metric("bob").meter();
+        metrics.metric("bob").meter();
+        Thread.sleep(20);
+        assertThat(statReceiver.receivedMessages, containsAMessageWhichIncludes("prefix.bob.samples:2|g"));
+    }
+
+    @Test
     public void sendsIncrementStatsToServer() throws Exception {
         metrics.metric("bob").increment();
+        metrics.metric("bob").increment();
         Thread.sleep(20);
-        assertThat(statReceiver.receivedMessages, containsAMessageWhichIncludes("prefix.bob:1|g"));
+        assertThat(statReceiver.receivedMessages, containsAMessageWhichIncludes("prefix.bob:2|g"));
     }
 
     @Test

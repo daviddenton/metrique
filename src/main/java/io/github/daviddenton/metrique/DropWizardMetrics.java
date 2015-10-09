@@ -74,5 +74,10 @@ public class DropWizardMetrics extends Metrics {
         public void count(MetricName name, Long value) {
             registry.meter(name.value).mark(value);
         }
+
+        @Override
+        public void meter(MetricName name) {
+            registry.meter(name.value).mark();
+        }
     }
 }

@@ -21,6 +21,7 @@ public class TestingMetricsTest {
         metric.time(1L);
         metric.gauge(() -> 1L);
         metric.histogram(1L);
+        metric.meter();
         metric.decrement();
         metric.increment();
     }
@@ -30,6 +31,13 @@ public class TestingMetricsTest {
         assertThat(recordingMetrics.counter(metricName("bob")), equalTo(0L));
         metric.count(1L);
         assertThat(recordingMetrics.counter(metricName("bob")), equalTo(1L));
+    }
+
+    @Test
+    public void recordingMetricsRecordsMeterMark() throws Exception {
+        assertThat(recordingMetrics.meter(metricName("bob")), equalTo(0L));
+        metric.meter();
+        assertThat(recordingMetrics.meter(metricName("bob")), equalTo(1L));
     }
 
     @Test

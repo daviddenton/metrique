@@ -30,6 +30,9 @@ public interface TestingMetrics {
         }
 
         @Override
+        public void meter(MetricName name) { System.out.println("Metrics: meter: " + name); }
+
+        @Override
         public void time(MetricName name, Long value) {
             System.out.println("Metrics: time: " + name + "=" + value);
         }
@@ -42,6 +45,7 @@ public interface TestingMetrics {
 
     class RecallableMetricsClient implements MetricsClient {
         protected final Map<MetricName, Long> counters = new HashMap<>();
+        protected final Map<MetricName, Long> meters = new HashMap<>();
         protected final Map<MetricName, Supplier<?>> gauges = new HashMap<>();
         protected final Map<MetricName, List<Long>> histograms = new HashMap<>();
         protected final Map<MetricName, List<Long>> timers = new HashMap<>();
@@ -83,27 +87,37 @@ public interface TestingMetrics {
         public void count(MetricName name, Long value) {
             Long existing = counters.get(name);
             counters.put(name, existing == null ? value : existing + value);
+        }
 
+        @Override
+        public void meter(MetricName name) {
+            Long existing = meters.get(name);
+            meters.put(name, existing == null ? 1 : existing + 1);
         }
     }
 
     class RecordingMetrics extends Metrics {
         public long counter(MetricName name) {
-            Long val = ((RecallableMetricsClient)client).counters.get(name);
+            Long val = ((RecallableMetricsClient) client).counters.get(name);
+            return val == null ? 0 : val;
+        }
+
+        public long meter(MetricName name) {
+            Long val = ((RecallableMetricsClient) client).meters.get(name);
             return val == null ? 0 : val;
         }
 
         public <T> T gauge(MetricName name) {
-            return (T) ((RecallableMetricsClient)client).gauges.get(name).get();
+            return (T) ((RecallableMetricsClient) client).gauges.get(name).get();
         }
 
         public List<Long> histogram(MetricName name) {
-            List<Long> val = ((RecallableMetricsClient)client).histograms.get(name);
+            List<Long> val = ((RecallableMetricsClient) client).histograms.get(name);
             return val == null ? Collections.<Long>emptyList() : val;
         }
 
         public List<Long> timer(MetricName name) {
-            List<Long> val = ((RecallableMetricsClient)client).timers.get(name);
+            List<Long> val = ((RecallableMetricsClient) client).timers.get(name);
             return val == null ? Collections.<Long>emptyList() : val;
         }
 

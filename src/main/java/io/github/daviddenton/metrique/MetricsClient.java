@@ -12,6 +12,8 @@ public interface MetricsClient {
 
     void histogram(MetricName name, Long value);
 
+    void meter(MetricName name);
+
     void time(MetricName name, Long value);
 
     void count(MetricName name, Long value);

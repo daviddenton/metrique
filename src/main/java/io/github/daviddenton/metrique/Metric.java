@@ -13,5 +13,7 @@ public interface Metric {
 
     void time(Long value);
 
+    void meter();
+
     void count(Long value);
 }
