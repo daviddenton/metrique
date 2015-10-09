@@ -1,13 +1,17 @@
 package io.github.daviddenton.metrique;
 
+import java.util.function.Supplier;
+
 public interface Metric {
-  void decrement();
+    void decrement();
 
-  void increment();
+    void increment();
 
-  void gauge(Long value);
+    void histogram(Long value);
 
-  void time(Long value);
+    <T> void gauge(Supplier<T> value);
 
-  void count(Long value);
+    void time(Long value);
+
+    void count(Long value);
 }

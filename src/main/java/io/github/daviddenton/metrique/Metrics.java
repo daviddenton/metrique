@@ -1,5 +1,7 @@
 package io.github.daviddenton.metrique;
 
+import java.util.function.Supplier;
+
 public class Metrics {
 
     protected final MetricsClient client;
@@ -38,7 +40,12 @@ public class Metrics {
                 client.decrement(finalName);
             }
 
-            public void gauge(Long value) {
+            public void histogram(Long value) {
+                client.histogram(finalName, value);
+            }
+
+            @Override
+            public <T> void gauge(Supplier<T> value) {
                 client.gauge(finalName, value);
             }
 

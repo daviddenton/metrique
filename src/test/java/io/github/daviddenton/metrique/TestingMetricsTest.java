@@ -19,7 +19,8 @@ public class TestingMetricsTest {
         Metric metric = PrintingMetrics.child("bob").metric("rita");
         metric.count(1L);
         metric.time(1L);
-        metric.gauge(1L);
+        metric.gauge(() -> 1L);
+        metric.histogram(1L);
         metric.decrement();
         metric.increment();
     }
@@ -46,10 +47,16 @@ public class TestingMetricsTest {
     }
 
     @Test
-    public void recordingMetricsRecordsGauge() throws Exception {
-        assertThat(recordingMetrics.gauge(metricName("bob")).isEmpty(), equalTo(true));
-        metric.gauge(1L);
-        assertThat(recordingMetrics.gauge(metricName("bob")), equalTo(singletonList(1L)));
+    public void recordingMetricsRecordsHistogram() throws Exception {
+        assertThat(recordingMetrics.histogram(metricName("bob")).isEmpty(), equalTo(true));
+        metric.histogram(1L);
+        assertThat(recordingMetrics.histogram(metricName("bob")), equalTo(singletonList(1L)));
+    }
+
+    @Test
+    public void recordingMetricsCanQueryGauge() throws Exception {
+        recordingMetrics.metric("bob").gauge(() -> 123L);
+        assertThat(recordingMetrics.gauge(metricName("bob")), equalTo(123L));
     }
 
     @Test

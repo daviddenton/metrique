@@ -1,6 +1,5 @@
 package io.github.daviddenton.metrique;
 
-import com.google.common.base.Predicate;
 import io.github.daviddenton.metrique.testing.FakeStatsDServer;
 import io.github.daviddenton.metrique.testing.StatsDReceiver;
 import org.hamcrest.Matcher;
@@ -10,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.google.common.collect.Iterables.any;
 import static io.github.daviddenton.metrique.DropWizardMetrics.dropWizardMetrics;
@@ -45,10 +45,19 @@ public class DropWizardMetricsTest {
     }
 
     @Test
-    public void sendsGaugeStatsToServer() throws Exception {
-        metrics.metric("bob").gauge(1L);
+    public void sendsHistogramStatsToServer() throws Exception {
+        metrics.metric("bob").histogram(1L);
         Thread.sleep(20);
         assertThat(statReceiver.receivedMessages, containsAMessageWhichIncludes("prefix.bob.samples:1|g"));
+    }
+
+    @Test
+    public void sendsGaugeStatsToServer() throws Exception {
+        AtomicInteger value = new AtomicInteger(1);
+        metrics.metric("bob").gauge(() -> value.addAndGet(1));
+        Thread.sleep(20);
+        System.out.println(statReceiver.receivedMessages);
+        assertThat(statReceiver.receivedMessages, containsAMessageWhichIncludes("prefix.bob:2|g"));
     }
 
     @Test
@@ -72,7 +81,6 @@ public class DropWizardMetricsTest {
 
     public static Matcher<List<String>> containsAMessageWhichIncludes(final String message) {
         return new TypeSafeMatcher<List<String>>() {
-
             @Override
             public void describeTo(org.hamcrest.Description description) {
                 description.appendText("containing a partial message of " + message);
@@ -80,12 +88,7 @@ public class DropWizardMetricsTest {
 
             @Override
             protected boolean matchesSafely(List<String> allMessages) {
-                return any(allMessages, new Predicate<String>() {
-                    @Override
-                    public boolean apply(String input) {
-                        return input.contains(message);
-                    }
-                });
+                return any(allMessages, input -> input.contains(message));
             }
         };
     }

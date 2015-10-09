@@ -5,9 +5,15 @@ import io.github.daviddenton.metrique.Metrics;
 import io.github.daviddenton.metrique.MetricsClient;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 public interface TestingMetrics {
-    static Metrics PrintingMetrics = new Metrics(new MetricsClient() {
+    Metrics PrintingMetrics = new Metrics(new MetricsClient() {
+        @Override
+        public <T> void gauge(MetricName name, Supplier<T> supplier) {
+            System.out.println("Metrics: registered gauge " + name);
+        }
+
         @Override
         public void decrement(MetricName name) {
             System.out.println("Metrics: decrement: " + name);
@@ -19,8 +25,8 @@ public interface TestingMetrics {
         }
 
         @Override
-        public void gauge(MetricName name, Long value) {
-            System.out.println("Metrics: gauge: " + name + "=" + value);
+        public void histogram(MetricName name, Long value) {
+            System.out.println("Metrics: histogram: " + name + "=" + value);
         }
 
         @Override
@@ -34,25 +40,33 @@ public interface TestingMetrics {
         }
     }, MetricName.ROOT);
 
-    static class RecallableMetricsClient implements MetricsClient {
+    class RecallableMetricsClient implements MetricsClient {
         protected final Map<MetricName, Long> counters = new HashMap<>();
-        protected final Map<MetricName, List<Long>> gauges = new HashMap<>();
+        protected final Map<MetricName, Supplier<?>> gauges = new HashMap<>();
+        protected final Map<MetricName, List<Long>> histograms = new HashMap<>();
         protected final Map<MetricName, List<Long>> timers = new HashMap<>();
 
         @Override
-        public void gauge(MetricName name, Long value) {
-            if (!gauges.containsKey(name)) {
-                gauges.put(name, new ArrayList<Long>());
+        public void histogram(MetricName name, Long value) {
+            if (!histograms.containsKey(name)) {
+                histograms.put(name, new ArrayList<>());
             }
-            gauges.get(name).add(value);
+            histograms.get(name).add(value);
         }
 
         @Override
         public void time(MetricName name, Long value) {
             if (!timers.containsKey(name)) {
-                timers.put(name, new ArrayList<Long>());
+                timers.put(name, new ArrayList<>());
             }
             timers.get(name).add(value);
+        }
+
+        @Override
+        public <T> void gauge(MetricName name, Supplier<T> supplier) {
+            if (!gauges.containsKey(name)) {
+                gauges.put(name, supplier);
+            }
         }
 
         @Override
@@ -73,14 +87,18 @@ public interface TestingMetrics {
         }
     }
 
-    static class RecordingMetrics extends Metrics {
+    class RecordingMetrics extends Metrics {
         public long counter(MetricName name) {
             Long val = ((RecallableMetricsClient)client).counters.get(name);
             return val == null ? 0 : val;
         }
 
-        public List<Long> gauge(MetricName name) {
-            List<Long> val = ((RecallableMetricsClient)client).gauges.get(name);
+        public <T> T gauge(MetricName name) {
+            return (T) ((RecallableMetricsClient)client).gauges.get(name).get();
+        }
+
+        public List<Long> histogram(MetricName name) {
+            List<Long> val = ((RecallableMetricsClient)client).histograms.get(name);
             return val == null ? Collections.<Long>emptyList() : val;
         }
 

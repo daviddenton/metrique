@@ -1,9 +1,11 @@
 package io.github.daviddenton.metrique;
 
+import com.codahale.metrics.Gauge;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.ScheduledReporter;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import static com.readytalk.metrics.StatsDReporter.forRegistry;
 import static io.github.daviddenton.metrique.MetricName.metricName;
@@ -44,6 +46,11 @@ public class DropWizardMetrics extends Metrics {
         }
 
         @Override
+        public <T> void gauge(MetricName name, Supplier<T> supplier) {
+            registry.register(name.value, (Gauge<T>) supplier::get);
+        }
+
+        @Override
         public void decrement(MetricName name) {
             registry.counter(name.value).dec(1);
         }
@@ -54,7 +61,7 @@ public class DropWizardMetrics extends Metrics {
         }
 
         @Override
-        public void gauge(MetricName name, Long value) {
+        public void histogram(MetricName name, Long value) {
             registry.histogram(name.value).update(value);
         }
 

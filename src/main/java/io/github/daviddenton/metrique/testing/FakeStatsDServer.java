@@ -1,6 +1,7 @@
 package io.github.daviddenton.metrique.testing;
 
 
+import io.github.daviddenton.metrique.DropWizardMetrics;
 import io.github.daviddenton.metrique.Host;
 import io.github.daviddenton.metrique.Port;
 
@@ -79,6 +80,9 @@ public class FakeStatsDServer {
     }
 
     public static void main(String[] args) throws Exception {
+        DropWizardMetrics prefix = DropWizardMetrics.dropWizardMetrics(Host.localhost, Port.port(8125), "prefix", 1000);
+        prefix.start();
+        prefix.metric("bob").gauge(() -> 1L);
         new FakeStatsDServer(port(8125)).start();
     }
 }

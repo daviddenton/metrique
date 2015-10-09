@@ -3,6 +3,8 @@ package io.github.daviddenton.metrique;
 
 import org.junit.Test;
 
+import java.util.function.Supplier;
+
 import static io.github.daviddenton.metrique.MetricName.metricName;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -59,8 +61,15 @@ public class MetricsTest {
     }
 
     @Test
+    public void histogramsRecordsAsExpected() throws Exception {
+        rootMetrics.child("bob").metric("rita").histogram(1L);
+        verify(client).histogram(metricName("bob", "rita"), 1L);
+    }
+
+    @Test
     public void gaugesRecordsAsExpected() throws Exception {
-        rootMetrics.child("bob").metric("rita").gauge(1L);
-        verify(client).gauge(metricName("bob", "rita"), 1L);
+        Supplier<Long> longSupplier = () -> 1L;
+        rootMetrics.child("bob").metric("rita").gauge(longSupplier);
+        verify(client).gauge(metricName("bob", "rita"), longSupplier);
     }
 }
