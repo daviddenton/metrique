@@ -17,6 +17,6 @@ Currently, the library is published in JCenter (and synced to Maven Central).
 
 ####Release notes
 
-#####v2.0.0
+#####v3.0.0
   - Split out Histogram and Gauge (was Gauge previously). Gauges are now used when you want to track the last specific value of a metric (such as a circuit being open). Use Histogram when you want all the Percentile stuff (for request latencies 
   etc..)
